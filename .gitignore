@@ -1,0 +1,12 @@
+.env
+facility.db
+*.db-wal
+*.db-shm
+data/inbox/*
+data/processed/*
+data/failed/*
+data/vectorstore/
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
