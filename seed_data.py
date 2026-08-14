@@ -119,8 +119,10 @@ notes = [
 ]
 for asset_id, comment, author in notes:
     execute(
-        "INSERT OR IGNORE INTO expert_notes (note_id,asset_id,comment,author) VALUES (?,?,?,?)",
+        """INSERT INTO core.expert_notes (note_id, asset_id, comment, author)
+           VALUES (%s, %s, %s, %s)
+           ON CONFLICT (note_id) DO NOTHING""",
         (str(uuid.uuid4()), asset_id, comment, author),
     )
 print(f"[seed] {len(notes)} expert notes seeded")
-print("\n✅ Done. Run: PYTHONPATH=. python terminal_chat.py")
+print("\nDone. Run: PYTHONPATH=. python terminal_chat.py")

@@ -1,0 +1,18 @@
+{
+  "asset_id": "M37",
+  "asset_type": "Conveyor Belt",
+  "location": "Bay 1, Line C",
+  "timestamp": "2024-12-03T09:00:00Z",
+  "detections": [
+    {
+      "object": "Belt tension roller",
+      "condition": "Misalignment",
+      "confidence": 0.66
+    },
+    {
+      "object": "Drive motor",
+      "condition": "Overheating",
+      "confidence": 0.91
+    }
+  ]
+}

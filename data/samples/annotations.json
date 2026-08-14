@@ -1,0 +1,46 @@
+{
+  "asset_id": "M14",
+  "source": "cv_tracking",
+  "track_1": {
+    "track_id": 1,
+    "label": "board",
+    "category": "furniture",
+    "class_name": "tv",
+    "frame_id": 240,
+    "area": 12750.5,
+    "bbox": [
+      284,
+      91,
+      137,
+      113
+    ],
+    "centroid": [
+      350,
+      147
+    ],
+    "angle": -3.4,
+    "saved_at": "2026-06-04T10:07:42.628Z",
+    "notes": ""
+  },
+  "track_23": {
+    "track_id": 23,
+    "label": "",
+    "category": "unknown",
+    "class_name": "chair",
+    "frame_id": 200,
+    "area": 2625,
+    "bbox": [
+      514,
+      190,
+      37,
+      121
+    ],
+    "centroid": [
+      531,
+      240
+    ],
+    "angle": -89.5,
+    "saved_at": "2026-06-04T09:30:29.609Z",
+    "notes": ""
+  }
+}

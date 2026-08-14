@@ -1,52 +1,43 @@
-import sqlite3
 import os
-import threading
-from contextlib import contextmanager
+import psycopg
+from psycopg_pool import ConnectionPool
 from dotenv import load_dotenv
 
 load_dotenv()
 
-DB_PATH = os.getenv("DB_PATH", "facility.db")
-_local  = threading.local()
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:Wegro26@localhost:5432/FACILITY1.DB")
 
+pool = ConnectionPool(DATABASE_URL, min_size=1, max_size=10)
 
-def get_connection() -> sqlite3.Connection:
-    if not hasattr(_local, "conn") or _local.conn is None:
-        conn = sqlite3.connect(DB_PATH, check_same_thread=False, timeout=30)
-        conn.row_factory = sqlite3.Row
-        conn.execute("PRAGMA journal_mode=WAL")
-        conn.execute("PRAGMA synchronous=NORMAL")
-        conn.execute("PRAGMA cache_size=-64000")
-        conn.execute("PRAGMA temp_store=MEMORY")
-        conn.execute("PRAGMA mmap_size=268435456")
-        conn.execute("PRAGMA foreign_keys=ON")
-        _local.conn = conn
-    return _local.conn
-
-
-@contextmanager
-def get_db():
-    conn = get_connection()
-    try:
-        yield conn
-        conn.commit()
-    except Exception:
-        conn.rollback()
-        raise
-
-
+def get_connection():
+    """Return a new database connection from the pool.
+    This helper mirrors older code expectations and provides a
+    convenient way for scripts to obtain a raw connection.
+    """
+    return pool.connection()
 def query(sql: str, params: tuple = ()) -> list:
-    with get_db() as conn:
-        rows = conn.execute(sql, params).fetchall()
-        return [dict(r) for r in rows]
+    sql = sql.replace("?", "%s")
+    with pool.connection() as conn:
+        with conn.cursor(row_factory=psycopg.rows.dict_row) as cur:
+            cur.execute(sql, params)
+            return [dict(r) for r in cur.fetchall()]
 
 
 def execute(sql: str, params: tuple = ()) -> None:
-    with get_db() as conn:
-        conn.execute(sql, params)
+    sql = sql.replace("?", "%s")
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(sql, params)
+        conn.commit()
 
 
 def executemany(sql: str, params_list: list) -> int:
-    with get_db() as conn:
-        conn.executemany(sql, params_list)
+    if not params_list:
+        return 0
+    sql = sql.replace("?", "%s")
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            cur.executemany(sql, params_list)
+        conn.commit()
         return len(params_list)
+

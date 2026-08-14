@@ -1,18 +1,27 @@
+import os
 import shutil
 from pathlib import Path
 from core.schema import db_init
 from ingestion.universal import ingest_any
 
-INBOX     = Path("data/inbox")
-PROCESSED = Path("data/processed")
-FAILED    = Path("data/failed")
-DOC_EXTS  = {".pdf", ".txt"}
+BASE_DIR = Path(__file__).resolve().parent.parent
+DATA_DIR = Path(os.getenv("DATA_DIR", BASE_DIR / "data"))
+INBOX = DATA_DIR / "inbox"
+PROCESSED = DATA_DIR / "processed"
+FAILED = DATA_DIR / "failed"
+DOC_EXTS = {".pdf", ".txt"}
 DATA_EXTS = {".json", ".xlsx", ".xls", ".csv"}
 
 
 def scan_inbox() -> dict:
     db_init()
     results = {"processed": 0, "failed": 0}
+
+    for path in (INBOX, PROCESSED, FAILED):
+        path.mkdir(parents=True, exist_ok=True)
+
+    if not INBOX.exists():
+        return results
 
     all_files = [f for f in INBOX.iterdir()
                  if f.is_file() and f.suffix in DATA_EXTS | DOC_EXTS
@@ -31,6 +40,10 @@ def scan_inbox() -> dict:
             print(f"[watcher] FAILED {f.name}: {e}")
             shutil.move(str(f), FAILED / f.name)
             results["failed"] += 1
+
+    if results["processed"] > 0:
+        from ingestion.universal import refresh_views
+        refresh_views()
 
     return results
 

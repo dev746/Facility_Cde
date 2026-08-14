@@ -10,6 +10,10 @@ from whatsapp.commands import dispatch
 MOCK_USER = {"phone": "local", "name": "Local Dev", "role": "admin"}
 
 
+import sys
+import io
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
 def main():
     db_init()
     result = scan_inbox()

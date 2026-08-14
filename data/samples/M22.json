@@ -1,0 +1,18 @@
+{
+  "asset_id": "M22",
+  "asset_type": "Hydraulic Press",
+  "location": "Bay 4, Line B",
+  "timestamp": "2024-12-02T11:15:00Z",
+  "detections": [
+    {
+      "object": "Hydraulic cylinder",
+      "condition": "Pressure drop",
+      "confidence": 0.89
+    },
+    {
+      "object": "Piston rod",
+      "condition": "Surface corrosion",
+      "confidence": 0.81
+    }
+  ]
+}

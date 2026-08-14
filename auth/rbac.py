@@ -3,14 +3,16 @@ from collections import defaultdict
 from core.db import query, execute
 
 PERMISSIONS: dict = {
-    "admin":      ["machine", "findings", "notes", "summary", "list", "critical",
-                   "latest", "ask", "image", "addnote", "report", "help",
-                   "adduser", "removeuser", "listusers", "search", "linestatus"],
-    "expert":     ["machine", "findings", "notes", "summary", "list", "critical",
-                   "latest", "ask", "image", "addnote", "help", "search", "linestatus"],
-    "technician": ["machine", "findings", "summary", "latest", "image",
-                   "report", "ask", "help", "search"],
-    "viewer":     ["summary", "list", "help", "linestatus"],
+    "admin":      ["machine","findings","notes","summary","list","critical","latest",
+                   "ask","image","telemetry","calculate","convert",
+                   "addnote","report","search","linestatus","help",
+                   "adduser","removeuser","listusers"],
+    "expert":     ["machine","findings","notes","summary","list","critical","latest",
+                   "ask","image","telemetry","calculate","convert",
+                   "addnote","search","linestatus","help"],
+    "technician": ["machine","findings","summary","latest","image",
+                   "telemetry","calculate","convert","report","search","help"],
+    "viewer":     ["summary","list","linestatus","help"],
 }
 
 _rate_store: dict = defaultdict(list)
@@ -19,7 +21,7 @@ RATE_WINDOW = 60
 
 
 def get_user(phone: str) -> dict | None:
-    rows = query("SELECT * FROM users WHERE phone=? AND is_active=1", (phone,))
+    rows = query("SELECT * FROM auth.users WHERE phone = %s AND is_active = true", (phone,))
     return rows[0] if rows else None
 
 
@@ -36,31 +38,34 @@ def is_rate_limited(phone: str) -> bool:
     return False
 
 
-def register_user(phone: str, name: str, role: str, shift: str = "", line: str = "") -> str:
+def register_user(phone: str, name: str, role: str,
+                  shift: str = "", line: str = "") -> str:
     if role not in PERMISSIONS:
         return f"❌ Invalid role. Choose: {', '.join(PERMISSIONS)}"
     try:
         execute(
-            "INSERT INTO users (phone, name, role, shift, line) VALUES (?,?,?,?,?)",
-            (phone, name, role, shift, line),
+            """INSERT INTO auth.users (phone, name, role, is_active)
+               VALUES (%s, %s, %s, true)
+               ON CONFLICT (phone) DO UPDATE SET name=EXCLUDED.name, role=EXCLUDED.role, is_active=true""",
+            (phone, name, role),
         )
         return f"✅ {name} ({phone}) registered as {role}."
-    except Exception:
-        return "❌ Phone already registered."
+    except Exception as e:
+        return f"❌ Registration failed: {e}"
 
 
 def deregister_user(phone: str) -> str:
-    execute("UPDATE users SET is_active=0 WHERE phone=?", (phone,))
+    execute("UPDATE auth.users SET is_active = false WHERE phone = %s", (phone,))
     return f"✅ {phone} deactivated."
 
 
 def list_users() -> str:
-    rows = query("SELECT phone, name, role, shift, line FROM users WHERE is_active=1 ORDER BY role")
+    rows = query(
+        "SELECT phone, name, role FROM auth.users WHERE is_active = true ORDER BY role"
+    )
     if not rows:
         return "No active users."
     lines = [f"👥 *{len(rows)} active user(s)*"]
     for r in rows:
-        extra = f" | {r['shift']} shift" if r.get("shift") else ""
-        extra += f" | {r['line']}" if r.get("line") else ""
-        lines.append(f"• {r['name']} — {r['role']}{extra}")
+        lines.append(f"• {r['name']} ({r['phone']}) — {r['role']}")
     return "\n".join(lines)

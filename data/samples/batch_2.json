@@ -1,0 +1,222 @@
+{
+  "batch_number": 2,
+  "cm_per_pixel": 0.10421311648724584,
+  "total_scraps": 5,
+  "scraps": [
+    {
+      "id": 1,
+      "piece_name": "irregular_1",
+      "shape_type": "irregular",
+      "vertices_count": 6,
+      "vertex_labels": {
+        "A": [
+          131,
+          335
+        ],
+        "B": [
+          128,
+          351
+        ],
+        "C": [
+          172,
+          363
+        ],
+        "D": [
+          162,
+          416
+        ],
+        "E": [
+          177,
+          420
+        ],
+        "F": [
+          197,
+          350
+        ]
+      },
+      "side_lengths_cm": {
+        "AB": 1.7,
+        "BC": 4.75,
+        "CD": 5.62,
+        "DE": 1.62,
+        "EF": 7.59,
+        "FA": 7.05
+      },
+      "area_cm2": 25.18
+    },
+    {
+      "id": 2,
+      "piece_name": "irregular_2",
+      "shape_type": "irregular",
+      "vertices_count": 8,
+      "vertex_labels": {
+        "A": [
+          384,
+          322
+        ],
+        "B": [
+          364,
+          336
+        ],
+        "C": [
+          361,
+          362
+        ],
+        "D": [
+          381,
+          383
+        ],
+        "E": [
+          403,
+          384
+        ],
+        "F": [
+          421,
+          367
+        ],
+        "G": [
+          423,
+          344
+        ],
+        "H": [
+          411,
+          329
+        ]
+      },
+      "side_lengths_cm": {
+        "AB": 2.54,
+        "BC": 2.73,
+        "CD": 3.02,
+        "DE": 2.3,
+        "EF": 2.58,
+        "FG": 2.41,
+        "GH": 2.0,
+        "HA": 2.91
+      },
+      "area_cm2": 33.7
+    },
+    {
+      "id": 3,
+      "piece_name": "circle_1",
+      "shape_type": "circle",
+      "vertices_count": 7,
+      "vertex_labels": {
+        "A": [
+          268,
+          300
+        ],
+        "B": [
+          253,
+          305
+        ],
+        "C": [
+          249,
+          312
+        ],
+        "D": [
+          248,
+          323
+        ],
+        "E": [
+          260,
+          334
+        ],
+        "F": [
+          273,
+          330
+        ],
+        "G": [
+          280,
+          308
+        ]
+      },
+      "side_lengths_cm": {
+        "AB": 1.65,
+        "BC": 0.84,
+        "CD": 1.15,
+        "DE": 1.7,
+        "EF": 1.42,
+        "FG": 2.41,
+        "GA": 1.5
+      },
+      "area_cm2": 8.87
+    },
+    {
+      "id": 4,
+      "piece_name": "irregular_3",
+      "shape_type": "irregular",
+      "vertices_count": 5,
+      "vertex_labels": {
+        "A": [
+          144,
+          220
+        ],
+        "B": [
+          128,
+          230
+        ],
+        "C": [
+          128,
+          236
+        ],
+        "D": [
+          160,
+          273
+        ],
+        "E": [
+          163,
+          242
+        ]
+      },
+      "side_lengths_cm": {
+        "AB": 1.97,
+        "BC": 0.63,
+        "CD": 5.1,
+        "DE": 3.25,
+        "EA": 3.03
+      },
+      "area_cm2": 11.12
+    },
+    {
+      "id": 5,
+      "piece_name": "irregular_4",
+      "shape_type": "irregular",
+      "vertices_count": 6,
+      "vertex_labels": {
+        "A": [
+          311,
+          212
+        ],
+        "B": [
+          301,
+          258
+        ],
+        "C": [
+          362,
+          269
+        ],
+        "D": [
+          370,
+          214
+        ],
+        "E": [
+          342,
+          229
+        ],
+        "F": [
+          334,
+          216
+        ]
+      },
+      "side_lengths_cm": {
+        "AB": 4.91,
+        "BC": 6.46,
+        "CD": 5.79,
+        "DE": 3.31,
+        "EF": 1.59,
+        "FA": 2.43
+      },
+      "area_cm2": 31.36
+    }
+  ]
+}

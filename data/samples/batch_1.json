@@ -1,0 +1,95 @@
+{
+  "batch_number": 1,
+  "cm_per_pixel": 0.10583867704109558,
+  "total_scraps": 3,
+  "scraps": [
+    {
+      "id": 1,
+      "piece_name": "square_1",
+      "shape_type": "square",
+      "vertices_count": 4,
+      "vertex_labels": {
+        "A": [
+          185,
+          367
+        ],
+        "B": [
+          183,
+          394
+        ],
+        "C": [
+          214,
+          398
+        ],
+        "D": [
+          217,
+          371
+        ]
+      },
+      "side_lengths_cm": {
+        "AB": 2.87,
+        "BC": 3.31,
+        "CD": 2.88,
+        "DA": 3.41
+      },
+      "area_cm2": 11.15
+    },
+    {
+      "id": 2,
+      "piece_name": "rectangle_1",
+      "shape_type": "rectangle",
+      "vertices_count": 4,
+      "vertex_labels": {
+        "A": [
+          351,
+          220
+        ],
+        "B": [
+          347,
+          289
+        ],
+        "C": [
+          397,
+          293
+        ],
+        "D": [
+          400,
+          224
+        ]
+      },
+      "side_lengths_cm": {
+        "AB": 7.32,
+        "BC": 5.31,
+        "CD": 7.31,
+        "DA": 5.2
+      },
+      "area_cm2": 40.53
+    },
+    {
+      "id": 3,
+      "piece_name": "triangle_1",
+      "shape_type": "triangle",
+      "vertices_count": 3,
+      "vertex_labels": {
+        "A": [
+          268,
+          251
+        ],
+        "B": [
+          256,
+          200
+        ],
+        "C": [
+          153,
+          222
+        ]
+      },
+      "side_lengths_cm": {
+        "AB": 5.55,
+        "BC": 11.15,
+        "CA": 12.55
+      },
+      "area_cm2": 36.95
+    }
+  ]
+}

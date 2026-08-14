@@ -1,0 +1,23 @@
+{
+  "asset_id": "M14",
+  "asset_type": "CNC Lathe",
+  "location": "Bay 2, Line A",
+  "timestamp": "2024-12-01T08:30:00Z",
+  "detections": [
+    {
+      "object": "Bearing",
+      "condition": "Wear detected",
+      "confidence": 0.92
+    },
+    {
+      "object": "Spindle housing",
+      "condition": "Hairline crack",
+      "confidence": 0.87
+    },
+    {
+      "object": "Oil seal",
+      "condition": "Minor leak",
+      "confidence": 0.74
+    }
+  ]
+}
