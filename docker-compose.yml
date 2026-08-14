@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  facility-cde:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      # Persistent data — survives container restarts and rebuilds
+      - facility_data:/data
+      # Inbox for dropping files to ingest
+      - facility_inbox:/app/data/inbox
+      - facility_processed:/app/data/processed
+      - facility_failed:/app/data/failed
+      - facility_images:/app/data/images
+      - facility_vectorstore:/app/data/vectorstore
+    environment:
+      - DB_PATH=/data/facility.db
+      # All secrets injected by Coolify from its environment variable UI
+      # Do not hardcode values here
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - NEMOTRON_MODEL=${NEMOTRON_MODEL}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
+      - TWILIO_WHATSAPP_FROM=${TWILIO_WHATSAPP_FROM}
+      - ADMIN_PHONE=${ADMIN_PHONE}
+      - VERIFY_TOKEN=${VERIFY_TOKEN}
+      - API_KEY=${API_KEY}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+volumes:
+  facility_data:
+  facility_inbox:
+  facility_processed:
+  facility_failed:
+  facility_images:
+  facility_vectorstore:
