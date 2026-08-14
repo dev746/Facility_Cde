@@ -6,6 +6,7 @@ SEED_FILE      = pathlib.Path(__file__).parent.parent / "facility_knowledge_corr
 
 
 def db_init():
+    import os
     with pool.connection() as conn:
         with conn.cursor() as cur:
             cur.execute("CREATE SCHEMA IF NOT EXISTS core;")
@@ -28,6 +29,17 @@ def db_init():
                 sql = path.read_text(encoding="utf-8")
                 cur.execute(sql)
                 cur.execute("INSERT INTO core.schema_migrations (version) VALUES (%s) ON CONFLICT DO NOTHING", (version,))
+                conn.commit()
+
+            # Auto-register ADMIN_PHONE from environment
+            admin_phone = os.getenv("ADMIN_PHONE")
+            if admin_phone:
+                print(f"[schema] Auto-registering admin phone: {admin_phone}")
+                cur.execute("""
+                    INSERT INTO auth.users (phone, name, role, is_active)
+                    VALUES (%s, 'System Admin', 'admin', true)
+                    ON CONFLICT (phone) DO UPDATE SET is_active = true, role = 'admin'
+                """, (admin_phone,))
                 conn.commit()
 
     print("[schema] DB migrations up to date!")
