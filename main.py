@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from core.schema import db_init
+from core.schema import db_init, seed_knowledge_base
 from ingestion.watcher import scan_inbox
 from whatsapp.webhook import router as wa_router
 from api.routes import router as api_router
@@ -13,6 +13,11 @@ def startup():
         db_init()
     except Exception as exc:
         print(f"[startup] db init failed: {exc}")
+
+    try:
+        seed_knowledge_base()
+    except Exception as exc:
+        print(f"[startup] seed failed: {exc}")
 
     try:
         result = scan_inbox()
