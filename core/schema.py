@@ -1,8 +1,5 @@
 import pathlib
-try:
-    from core.db import pool
-except ModuleNotFoundError:
-    from db import pool
+from core.db import pool
 
 MIGRATIONS_DIR = pathlib.Path(__file__).parent.parent / "migrations"
 
