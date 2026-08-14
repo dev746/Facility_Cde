@@ -84,7 +84,9 @@ def generate_reply(
     try:
         return chat(system, user_prompt, temperature=0.15, max_tokens=400)
     except Exception as e:
-        print(f"[responder] LLM failed: {e}, using structured fallback")
+        err = str(e).lower()
+        if "429" not in err and "rate" not in err and "quota" not in err:
+            print(f"[responder] LLM failed: {e}, using structured fallback")
         return _structured_fallback(intent, db_result, user)
 
 
@@ -142,13 +144,43 @@ def _structured_fallback(intent: str, result, user: dict) -> str:
         return "No data found for your query."
 
     if isinstance(result, dict):
-        if "asset" in result:  # summary shape
-            a = result["asset"]
+        # Shape 1: flat row from core.asset_summary materialized view
+        if "cv_detection_count" in result:
+            cv  = result.get("cv_detection_count", 0)
+            sc  = result.get("scrap_batch_count", 0)
+            bim = result.get("bim_element_count", 0)
+            nt  = result.get("note_count", 0)
+            la  = str(result.get("last_activity_at") or "N/A")[:10]
             return (
-                f"📊 *{a.get('asset_id','?')} — {a.get('name','?')}*\n"
-                f"Findings: {result.get('finding_count',0)}\n"
-                f"Critical: {'Yes' if result.get('critical') else 'No'}"
+                f"📊 *{result.get('asset_id','?')} — {result.get('name','?')}*\n"
+                f"├ Type: {result.get('type','Unknown')}\n"
+                f"├ Location: {result.get('location','Unknown')}\n"
+                f"├ CV Detections: {cv}\n"
+                f"├ Scrap Batches: {sc}\n"
+                f"├ BIM Elements: {bim}\n"
+                f"├ Expert Notes: {nt}\n"
+                f"└ Last Activity: {la}"
             )
+        # Shape 2: computed summary {"asset": {...}, "finding_count": N, ...}
+        if "asset" in result:
+            a  = result["asset"]
+            fc = result.get("finding_count", 0)
+            nc = result.get("note_count", 0)
+            sc = result.get("severity_counts", {})
+            tf = result.get("top_finding")
+            status = "🚨 Critical" if result.get("critical") else ("⚠️ Attention" if fc > 5 else "✅ OK")
+            lines = [
+                f"📊 *{a.get('asset_id','?')} — {a.get('name','?')}*",
+                f"├ Type: {a.get('type','?')}",
+                f"├ Location: {a.get('location','?')}",
+                f"├ Findings: {fc} (🚨{sc.get('critical',0)} ⚠️{sc.get('high',0)})",
+                f"├ Notes: {nc}",
+                f"└ Status: {status}",
+            ]
+            if tf:
+                lines.append(f"\n*Top Finding:* {tf.get('object','')} — {tf.get('condition','')}")
+            return "\n".join(lines)
+        # Shape 3: generic dict — just dump key-values
         lines = [f"• {k}: {v}" for k, v in list(result.items())[:8]]
         return "\n".join(lines)
 

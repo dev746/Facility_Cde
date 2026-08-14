@@ -173,11 +173,18 @@ def nl_to_sql_and_execute(question: str) -> dict:
         sql = parsed.get("sql", "").strip()
         explanation = parsed.get("explanation", "")
     except Exception as e:
+        # Distinguish rate-limit / quota errors from real bugs
+        err_str = str(e).lower()
+        if "429" in err_str or "rate" in err_str or "quota" in err_str:
+            llm_err = "llm_rate_limited"
+        else:
+            llm_err = f"LLM failed: {e}"
         return {
             "question": question,
             "sql": "",
             "explanation": "",
-            "rows": f"LLM failed to generate SQL: {e}",
+            "rows": [],
+            "llm_error": llm_err,
             "row_count": 0,
             "db_version": db_ver,
         }
@@ -201,8 +208,21 @@ def ask_db(question: str, language: str = "english") -> str:
     """
     result = nl_to_sql_and_execute(question)
 
-    if result.get("error"):
-        return f"❌ Could not query database: {result['error']}"
+    # LLM rate-limited — return friendly message with direct command hints
+    if result.get("llm_error") == "llm_rate_limited":
+        return (
+            "⏳ *AI assistant is temporarily unavailable* (daily limit reached).\n\n"
+            "You can still use direct commands:\n"
+            "• *list* — all assets\n"
+            "• *summary M14* — asset overview\n"
+            "• *findings M14* — defects\n"
+            "• *critical* — critical findings\n"
+            "• *latest* — recent inspections\n"
+            "• *help* — all commands"
+        )
+
+    if result.get("llm_error"):
+        return f"❌ Could not query database: {result['llm_error']}"
 
     if not result["rows"]:
         return f"📭 No records found for: *{question}*"
@@ -228,8 +248,8 @@ def ask_db(question: str, language: str = "english") -> str:
             max_tokens=600,
         )
         return reply or f"Found {result['row_count']} records. SQL: {result['sql']}"
-    except Exception as e:
-        # Fallback: return raw rows as formatted text
+    except Exception:
+        # LLM down for formatting too — return raw rows as plain text
         lines = [f"📊 *Results for:* {question}\n"]
         for r in result["rows"][:10]:
             lines.append("  • " + ", ".join(f"{k}: {v}" for k, v in r.items()))
