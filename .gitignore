@@ -1,4 +1,5 @@
 .env
+.env.example
 facility.db
 *.db-wal
 *.db-shm
