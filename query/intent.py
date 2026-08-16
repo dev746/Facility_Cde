@@ -31,6 +31,7 @@ Intent definitions:
   removeuser  -> deactivate a worker
   listusers   -> show registered workers
   help        -> available commands
+  greeting    -> casual greeting, hello, hi, namaste, namaskara, welcome, activation
   unknown     -> cannot determine
 
 asset_id: codes like M14, BATCH1 uppercase. Names -> null.
@@ -53,6 +54,7 @@ KEYWORDS = {
     "removeuser": ["removeuser", "remove user"],
     "listusers":  ["listusers", "list users"],
     "help":       ["help", "commands", "sahayata"],
+    "greeting":   ["hi", "hello", "hey", "namaste", "namaskara", "welcome", "sup", "yo", "ram ram", "hola", "hi there", "hello there"],
     "linestatus": ["line status", "line a", "line b", "line c", "production line"],
     "critical":   ["critical", "urgent", "severe", "high priority", "gambhir"],
     "latest":     ["latest", "recent", "last inspection", "newest", "haal hi"],

@@ -394,6 +394,12 @@ def dispatch(intent: str, asset_id, full_text: str, user: dict) -> str:
     if intent == "listusers":
         return list_users()
 
+    if intent == "greeting":
+        from query.context import build_context_prompt, update_context
+        ctx_prompt = build_context_prompt(user.get("phone", ""), user)
+        update_context(user.get("phone", ""), intent, None, lang)
+        return generate_reply(intent, None, full_text, user, ctx_prompt, lang)
+
     if intent == "help":
         return fmt_help(user["role"])
 

@@ -258,6 +258,10 @@ def dispatch(intent: str, asset_id, full_text: str,
     if intent == "listusers":
         return list_users()
 
+    if intent == "greeting":
+        update_context(phone, intent, None, language)
+        return generate_reply(intent, None, full_text, user, context_prompt, language)
+
     if intent == "help":
         return _help_text(user.get("role", "viewer"))
 
